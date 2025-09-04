@@ -5,3 +5,6 @@ def index(request):
 
 def album(request):
     return render(request,"core/album.html")
+
+def info(request):
+    return render(request,"core/info.html")

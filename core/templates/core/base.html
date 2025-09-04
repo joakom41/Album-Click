@@ -28,7 +28,7 @@
             <ul class="nav-menu">
                 <li><a href="{% url 'index' %}" class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">Inicio</a></li>
                 <li><a href="{% url 'album' %}" class="nav-link {% if request.resolver_match.url_name == 'album' %}active{% endif %}">Album</a></li>
-                <li><a href="#" class="nav-link">Preguntas Frecuentes</a></li>
+                <li><a href="{% url 'preguntas' %}" class="nav-link">Preguntas Frecuentes</a></li>
                 <li><a href="{% url 'info' %}" class="nav-link">Quienes Somos</a></li>
             </ul>
             <div class="hamburger">

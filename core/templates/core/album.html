@@ -1,5 +1,5 @@
 {% extends 'core/base.html' %}
-{% block content  %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,798 +10,160 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * {margin:0; padding:0; box-sizing:border-box;}
+        body {font-family:'Inter',sans-serif; line-height:1.6; color:#475569; background:#fefefe;}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #475569;
-            background: #fefefe;
-        }
+        /* Hero */
+        .album-hero {background:linear-gradient(135deg,#f8f0f5,#f0f4f8); padding:100px 20px; text-align:center; position:relative;}
+        .album-title {font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:600; color:#1e293b;}
+        .album-subtitle {font-size:1.2rem; color:#64748b; max-width:600px; margin:0 auto; font-weight:400; line-height:1.7;}
 
-        .album-hero {
-            background: linear-gradient(135deg, #f8f0f5 0%, #f0f4f8 50%, #f7f8fa 100%);
-            padding: 100px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .album-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 20%, rgba(226, 210, 224, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(212, 227, 240, 0.3) 0%, transparent 50%);
-        }
-        
-        .hero-container {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .album-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #1e293b;
-            letter-spacing: -0.02em;
-        }
-        
-        .album-subtitle {
-            font-size: 1.25rem;
-            color: #64748b;
-            max-width: 600px;
-            margin: 0 auto;
-            font-weight: 400;
-            line-height: 1.7;
-        }
-        
-        .gallery-section {
-            padding: 80px 20px;
-            background: #ffffff;
-        }
-        
-        .gallery-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .gallery-filters {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 4rem;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 14px 32px;
-            border: 1.5px solid #e1e5e9;
-            background: #fefefe;
-            color: #64748b;
-            border-radius: 50px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.025em;
-        }
-        
-        .filter-btn:hover {
-            background: #f8f9fa;
-            color: #475569;
-            border-color: #cbd5e1;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 25px rgba(71, 85, 105, 0.08);
-        }
-        
-        .filter-btn.active {
-            background: #475569;
-            color: white;
-            border-color: #475569;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(71, 85, 105, 0.15);
-        }
-        
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 2.5rem;
-            margin-bottom: 4rem;
-        }
-        
-        .artwork-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(71, 85, 105, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: 1px solid #f1f5f9;
-        }
-        
-        .artwork-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(71, 85, 105, 0.12);
-            border-color: #e2e8f0;
-        }
-        
-        .artwork-image {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .artwork-card:hover .artwork-image {
-            transform: scale(1.03);
-        }
-        
-        .artwork-details {
-            padding: 2rem;
-            background: #fefefe;
-        }
-        
-        .artwork-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
-        }
-        
-        .artwork-meta {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            font-weight: 400;
-        }
-        
-        .artwork-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .artwork-stats {
-            display: flex;
-            gap: 1.5rem;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .like-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 0.75rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .like-btn:hover {
-            color: #f8a4c4;
-            background: #fef7f0;
-            transform: scale(1.05);
-        }
-        
-        .like-btn.liked {
-            color: #f8a4c4;
-            background: #fef7f0;
-        }
-        
-        .artwork-price {
-            font-weight: 600;
-            color: #475569;
-            font-size: 1.1rem;
-            padding: 0.5rem 1rem;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 2rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-content {
-            background: white;
-            border-radius: 32px;
-            max-width: 900px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 25px 50px rgba(30, 41, 59, 0.15);
-        }
-        
-        .modal-overlay.show .modal-content {
-            transform: translateY(0) scale(1);
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            background: rgba(30, 41, 59, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .modal-close:hover {
-            background: rgba(30, 41, 59, 0.9);
-            transform: scale(1.1);
-        }
-        
-        .modal-image {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-        }
-        
-        .modal-info {
-            padding: 3rem;
-        }
-        
-        .modal-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.25rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.02em;
-        }
-        
-        .modal-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            background: #f8f9fa;
-            border-radius: 20px;
-            border: 1px solid #f1f5f9;
-        }
-        
-        .meta-item {
-            text-align: center;
-        }
-        
-        .meta-label {
-            font-weight: 600;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        .meta-value {
-            color: #475569;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-        
-        .modal-description {
-            color: #64748b;
-            line-height: 1.7;
-            margin-bottom: 2.5rem;
-            font-size: 1rem;
-        }
-        
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 14px 28px;
-            border: 1.5px solid #e2e8f0;
-            background: white;
-            color: #64748b;
-            border-radius: 50px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.95rem;
-        }
-        
-        .action-btn:hover {
-            background: #f8f9fa;
-            color: #475569;
-            border-color: #cbd5e1;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(71, 85, 105, 0.08);
-        }
-        
-        @media (max-width: 768px) {
-            .album-title {
-                font-size: 2.75rem;
-            }
-            
-            .album-subtitle {
-                font-size: 1.1rem;
-                padding: 0 1rem;
-            }
-            
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .gallery-filters {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.75rem;
-            }
-            
-            .filter-btn {
-                width: 200px;
-                text-align: center;
-            }
-            
-            .modal-content {
-                margin: 1rem;
-                border-radius: 24px;
-            }
-            
-            .modal-info {
-                padding: 2rem;
-            }
-            
-            .modal-title {
-                font-size: 1.75rem;
-            }
-            
-            .modal-actions {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-            
-            .action-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+        /* Gallery */
+        .gallery-section {padding:60px 20px; background:#fff;}
+        .gallery-container {max-width:1400px; margin:0 auto;}
+        .gallery-grid {display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:2.5rem;}
 
-        @media (max-width: 480px) {
-            .album-hero {
-                padding: 60px 20px;
-            }
-            
-            .album-title {
-                font-size: 2.25rem;
-            }
-            
-            .gallery-section {
-                padding: 60px 20px;
-            }
-            
-            .artwork-details {
-                padding: 1.5rem;
-            }
-        }
+        .artwork-card {background:white; border-radius:24px; overflow:hidden; box-shadow:0 4px 20px rgba(71,85,105,0.08); border:1px solid #f1f5f9; cursor:pointer; transition:0.3s;}
+        .artwork-card:hover {transform:translateY(-8px); box-shadow:0 20px 40px rgba(71,85,105,0.12);}
+        .artwork-image {width:100%; height:280px; object-fit:cover; transition: transform 0.3s;}
+        .artwork-card:hover .artwork-image {transform:scale(1.03);}
+        .artwork-details {padding:1.5rem;}
+        .artwork-name {font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:600; color:#1e293b; margin-bottom:0.5rem;}
+        .artwork-meta {color:#94a3b8; font-size:0.9rem;}
+        .like-btn {background:none;border:none;color:#94a3b8;cursor:pointer;font-size:0.9rem; display:flex; align-items:center; gap:0.3rem;}
+        .like-btn.liked {color:#f8a4c4;}
+
+        /* Modal */
+        .modal-overlay {position:fixed;top:0;left:0;right:0;bottom:0; background:rgba(30,41,59,0.75); display:flex; align-items:center; justify-content:center; z-index:1000; padding:2rem; opacity:0; visibility:hidden; transition:0.3s;}
+        .modal-overlay.show {opacity:1; visibility:visible;}
+        .modal-content {background:white; border-radius:32px; max-width:900px; width:100%; max-height:90vh; overflow-y:auto; position:relative; transform:translateY(20px) scale(0.95); transition:0.3s; display:flex; flex-direction:column; border:1px solid #f1f5f9;}
+        .modal-overlay.show .modal-content {transform:translateY(0) scale(1);}
+        .modal-close {position:absolute;top:1rem; right:1rem; background:rgba(30,41,59,0.8); color:white; border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+        .modal-close:hover {background:rgba(30,41,59,0.9);}
+
+        /* Modal horizontal layout */
+        .modal-body {display:flex; flex-wrap:wrap; padding:2rem; gap:2rem;}
+        .modal-image-container {flex:1 1 50%; min-width:300px;}
+        .modal-image {width:100%; height:auto; object-fit:cover; border-radius:16px;}
+        .modal-info {flex:1 1 50%; min-width:300px;}
+        .modal-title {font-family:'Playfair Display',serif; font-size:2rem; font-weight:600; color:#1e293b; margin-bottom:1rem;}
+        .modal-meta {display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;}
+        .meta-item {flex:1; min-width:120px;}
+        .meta-label {font-weight:600; color:#94a3b8; font-size:0.85rem; margin-bottom:0.3rem;}
+        .meta-value {color:#475569; font-weight:500; font-size:1rem;}
+        .modal-description {color:#64748b; line-height:1.6; margin-bottom:1.5rem;}
+        .modal-actions {display:flex; gap:1rem; flex-wrap:wrap;}
+        .action-btn {padding:10px 20px; border:1px solid #e2e8f0; border-radius:50px; background:white; cursor:pointer; display:flex; align-items:center; gap:0.5rem; transition:0.3s;}
+        .action-btn:hover {background:#f8f9fa;}
+
+        @media(max-width:768px){.modal-body{flex-direction:column;}}
     </style>
 </head>
 <body>
-    <!-- Album Hero Section -->
+    <!-- Hero -->
     <section class="album-hero">
-        <div class="hero-container">
-            <h1 class="album-title">Colección de Arte</h1>
-            <p class="album-subtitle">Explora nuestra exclusiva selección de obras contemporáneas y clásicas</p>
-        </div>
+        <h1 class="album-title">Colección de Arte</h1>
+        <p class="album-subtitle">Explora nuestra exclusiva selección de obras contemporáneas y clásicas</p>
     </section>
 
-    <!-- Gallery Section -->
+    <!-- Gallery -->
     <section class="gallery-section">
         <div class="gallery-container">
-
-            <!-- Gallery Grid -->
-            <div class="gallery-grid" id="galleryGrid">
+            <div class="gallery-grid">
                 <!-- Artwork 1 -->
-                <div class="artwork-card" data-category="abstract" data-artwork="1">
-                <img src="https://www.hispangallery.com/server/Portal_0002996/img/products/pintura-de-altea-de-constantino-penon-de-ifach-desde-altea-140x100-cm_9461798.jpg" 
-                    alt="Altea painting" class="artwork-image">
-
+                <div class="artwork-card" data-artwork="1">
+                    <img src="https://www.hispangallery.com/server/Portal_0002996/img/products/pintura-de-altea-de-constantino-penon-de-ifach-desde-altea-140x100-cm_9461798.jpg" alt="Altea painting" class="artwork-image">
                     <div class="artwork-details">
                         <h3 class="artwork-name">Altea painting</h3>
-                        <p class="artwork-meta"> Constantino • 1996 •</p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>1,520</span>
-                                </div>
-                                <button class="like-btn" data-id="1">
-                                    <i class="fas fa-heart"></i>
-                                    <span>234</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Artwork 2 -->
-                <div class="artwork-card" data-category="contemporary" data-artwork="2">
-                    <img src="" 
-                         alt="" class="artwork-image">
-                    <div class="artwork-details">
-                        <h3 class="artwork-name"></h3>
-                        <p class="artwork-meta"></p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>980</span>
-                                </div>
-                                <button class="like-btn" data-id="2">
-                                    <i class="fas fa-heart"></i>
-                                    <span>156</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Artwork 3 -->
-                <div class="artwork-card" data-category="landscape" data-artwork="3">
-                    <img src="" 
-                         alt="" class="artwork-image">
-                    <div class="artwork-details">
-                        <h3 class="artwork-name"></h3>
-                        <p class="artwork-meta">•  • </p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>2,340</span>
-                                </div>
-                                <button class="like-btn" data-id="3">
-                                    <i class="fas fa-heart"></i>
-                                    <span>445</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Artwork 4 -->
-                <div class="artwork-card" data-category="landscape" data-artwork="3">
-                    <img src="" 
-                         alt="" class="artwork-image">
-                    <div class="artwork-details">
-                        <h3 class="artwork-name"></h3>
-                        <p class="artwork-meta">•  • </p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>2,340</span>
-                                </div>
-                                <button class="like-btn" data-id="3">
-                                    <i class="fas fa-heart"></i>
-                                    <span>445</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Artwork 5 -->
-                <div class="artwork-card" data-category="landscape" data-artwork="3">
-                    <img src="" 
-                         alt="" class="artwork-image">
-                    <div class="artwork-details">
-                        <h3 class="artwork-name"></h3>
-                        <p class="artwork-meta">•  • </p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>2,340</span>
-                                </div>
-                                <button class="like-btn" data-id="3">
-                                    <i class="fas fa-heart"></i>
-                                    <span>445</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Artwork 6 -->
-                <div class="artwork-card" data-category="contemporary" data-artwork="6">
-                    <img src="" 
-                         alt="" class="artwork-image">
-                    <div class="artwork-details">
-                        <h3 class="artwork-name"></h3>
-                        <p class="artwork-meta">• 2023 • </p>
-                        <div class="artwork-actions">
-                            <div class="artwork-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-eye"></i>
-                                    <span>1,120</span>
-                                </div>
-                                <button class="like-btn" data-id="6">
-                                    <i class="fas fa-heart"></i>
-                                    <span>189</span>
-                                </button>
-                            </div>
-                        </div>
+                        <p class="artwork-meta">Constantino • 1996</p>
+                        <button class="like-btn"><i class="fas fa-heart"></i> <span class="likes-count">234</span></button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Modal for artwork details -->
+    <!-- Modal -->
     <div id="artworkModal" class="modal-overlay">
         <div class="modal-content">
-            <button class="modal-close" id="closeModal">
-                <i class="fas fa-times"></i>
-            </button>
-            <img id="modalImage" src="" alt="" class="modal-image">
-            <div class="modal-info">
-                <h2 id="modalTitle" class="modal-title"></h2>
-                <div class="modal-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">Artista</div>
-                        <div id="modalArtist" class="meta-value"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Año</div>
-                        <div id="modalYear" class="meta-value"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Técnica</div>
-                        <div id="modalMedium" class="meta-value"></div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Dimensiones</div>
-                        <div id="modalDimensions" class="meta-value"></div>
-                    </div>
+            <button class="modal-close" id="closeModal"><i class="fas fa-times"></i></button>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img id="modalImage" src="" class="modal-image">
                 </div>
-                <p id="modalDescription" class="modal-description"></p>
-                <div class="modal-actions">
-                    <button class="action-btn">
-                        <i class="fas fa-heart"></i>
-                        Me Gusta
-                    </button>
-                    <button class="action-btn">
-                        <i class="fas fa-share-alt"></i>
-                        Compartir
-                    </button>
-                    <button class="action-btn">
-                        <i class="fas fa-download"></i>
-                        Descargar
-                    </button>
+                <div class="modal-info">
+                    <h2 id="modalTitle" class="modal-title"></h2>
+                    <div class="modal-meta">
+                        <div class="meta-item"><div class="meta-label">Artista</div><div id="modalArtist" class="meta-value"></div></div>
+                        <div class="meta-item"><div class="meta-label">Año</div><div id="modalYear" class="meta-value"></div></div>
+                        <div class="meta-item"><div class="meta-label">Técnica</div><div id="modalMedium" class="meta-value"></div></div>
+                        <div class="meta-item"><div class="meta-label">Dimensiones</div><div id="modalDimensions" class="meta-value"></div></div>
+                    </div>
+                    <p id="modalDescription" class="modal-description"></p>
+                    <div class="modal-actions">
+                        <button class="action-btn" id="modalLikeBtn"><i class="fas fa-heart"></i> Me Gusta</button>
+                        <button class="action-btn"><i class="fas fa-share-alt"></i> Compartir</button>
+                        <button class="action-btn"><i class="fas fa-download"></i> Descargar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Artwork data
         const artworksData = {
             1: {
-                title: "Altea painting",
-                artist: "Constantino",
-                year: "1996",
-                medium: "óleo sobre lienzo",
-                dimensions: "140 x 100cm",
-                image: "https://www.hispangallery.com/server/Portal_0002996/img/products/pintura-de-altea-de-constantino-penon-de-ifach-desde-altea-140x100-cm_9461798.jpg",
-                description: "This beautiful painting has a mix of styles with cubist details and a coloring in earth and natural tones that will fit perfectly in any type of decoration."
-            },
-            2: {
-                title: "",
-                artist: "",
-                year: "",
-                medium: "Acrlico sobre Lienzo",
-                dimensions: " x  cm",
-                image: "",
-                description: ""
-            },
-            3: {
-                title: "",
-                artist: "",
-                year: "",
-                medium: "",
-                dimensions: "x  cm",
-                image: "",
-                description: ""
-            },
-            4: {
-                title: "",
-                artist: "",
-                year: "",
-                medium: "",
-                dimensions: " x cm",
-                image: "",
-                description: ""
-            },
-            5: {
-                title: "",
-                artist: "",
-                year: "",
-                medium: "",
-                dimensions: " x cm",
-                image: "",
-                description: ""
-            },
-            6: {
-                title: "",
-                artist: "",
-                year: "",
-                medium: "",
-                dimensions: "",
-                image: "",
-                description: ""
+                title:"Altea painting",
+                artist:"Constantino",
+                year:"1996",
+                medium:"óleo sobre lienzo",
+                dimensions:"140 x 100 cm",
+                image:"https://www.hispangallery.com/server/Portal_0002996/img/products/pintura-de-altea-de-constantino-penon-de-ifach-desde-altea-140x100-cm_9461798.jpg",
+                description:"Esta hermosa pintura combina estilos con detalles cubistas y tonos naturales.",
+                likes:234
             }
         };
 
-        // Filter functionality
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const artworkCards = document.querySelectorAll('.artwork-card');
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all buttons
-                filterBtns.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
-                btn.classList.add('active');
-                
-                const filter = btn.getAttribute('data-filter');
-                
-                artworkCards.forEach(card => {
-                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                        card.style.display = 'block';
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'translateY(0)';
-                        }, 100);
-                    } else {
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(20px)';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300);
-                    }
-                });
-            });
-        });
-
-        // Like functionality
-        const likeBtns = document.querySelectorAll('.like-btn');
-        likeBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                btn.classList.toggle('liked');
-                
-                const heartIcon = btn.querySelector('i');
-                if (btn.classList.contains('liked')) {
-                    heartIcon.classList.remove('far');
-                    heartIcon.classList.add('fas');
-                } else {
-                    heartIcon.classList.remove('fas');
-                    heartIcon.classList.add('far');
-                }
-            });
-        });
-
-        // Modal functionality
         const modal = document.getElementById('artworkModal');
         const closeModal = document.getElementById('closeModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalArtist = document.getElementById('modalArtist');
+        const modalYear = document.getElementById('modalYear');
+        const modalMedium = document.getElementById('modalMedium');
+        const modalDimensions = document.getElementById('modalDimensions');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalLikeBtn = document.getElementById('modalLikeBtn');
 
-        function showModal() {
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.classList.add('show');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
+        function showModal(){modal.style.display='flex'; setTimeout(()=>modal.classList.add('show'),10); document.body.style.overflow='hidden';}
+        function hideModal(){modal.classList.remove('show'); setTimeout(()=>modal.style.display='none',300); document.body.style.overflow='auto';}
 
-        function hideModal() {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-            document.body.style.overflow = 'auto';
-        }
+        closeModal.addEventListener('click', hideModal);
+        modal.addEventListener('click', e=>{if(e.target===modal) hideModal();});
+        document.addEventListener('keydown', e=>{if(e.key==='Escape') hideModal();});
 
-        artworkCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const artworkId = card.getAttribute('data-artwork');
-                const artwork = artworksData[artworkId];
-                
-                if (artwork) {
-                    document.getElementById('modalImage').src = artwork.image;
-                    document.getElementById('modalTitle').textContent = artwork.title;
-                    document.getElementById('modalArtist').textContent = artwork.artist;
-                    document.getElementById('modalYear').textContent = artwork.year;
-                    document.getElementById('modalMedium').textContent = artwork.medium;
-                    document.getElementById('modalDimensions').textContent = artwork.dimensions;
-                    document.getElementById('modalDescription').textContent = artwork.description;
-                    
-                    showModal();
-                }
+        document.querySelectorAll('.artwork-card').forEach(card=>{
+            card.addEventListener('click', ()=>{
+                const id = card.getAttribute('data-artwork');
+                const data = artworksData[id];
+                if(!data) return;
+                modalImage.src = data.image;
+                modalTitle.textContent = data.title;
+                modalArtist.textContent = data.artist;
+                modalYear.textContent = data.year;
+                modalMedium.textContent = data.medium;
+                modalDimensions.textContent = data.dimensions;
+                modalDescription.textContent = data.description;
+                modalLikeBtn.dataset.id = id;
+                showModal();
             });
         });
 
-        closeModal.addEventListener('click', hideModal);
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                hideModal();
-            }
-        });
-
-        // Escape key to close modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.classList.contains('show')) {
-                hideModal();
-            }
+        modalLikeBtn.addEventListener('click', ()=>{
+            const id = modalLikeBtn.dataset.id;
+            artworksData[id].likes += 1;
+            document.querySelector(`.artwork-card[data-artwork="${id}"] .likes-count`).textContent = artworksData[id].likes;
         });
     </script>
 </body>

@@ -8,3 +8,6 @@ def album(request):
 
 def info(request):
     return render(request,"core/info.html")
+
+def preguntas(request):
+    return render(request,"core/preguntas.html")

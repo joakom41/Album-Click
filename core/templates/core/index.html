@@ -1,0 +1,110 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Galería de Arte - Inicio{% endblock %}
+
+{% block content %}
+    <!-- Hero Section with Main Artwork -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h2 class="hero-title">Obra Destacada</h2>
+                <p class="hero-subtitle">Descubre la belleza en cada trazo, la emoción en cada color</p>
+            </div>
+            
+            <!-- Featured Artwork -->
+            <div class="artwork-container">
+                <div class="artwork-frame">
+                    <img src="https://tse2.mm.bing.net/th/id/OIP.l3o_Qo-9tlEWr4uj5iRkEgAAAA?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" 
+                         alt="Obra de Arte Principal" 
+                         class="main-artwork">
+                    <div class="artwork-info">
+                        <h3 class="artwork-title">"Fleur en noir et blanc"</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media & Contact Section -->
+    <section class="social-section">
+        <div class="social-container">
+            <div class="section-header">
+                <h2 class="section-title">Conecta Conmigo</h2>
+                <p class="section-subtitle">Sígueme en redes sociales y mantente al día con mis últimas creaciones artísticas</p>
+            </div>
+            
+            <div class="social-grid">
+                <!-- Facebook -->
+                <div class="social-card facebook">
+                    <div class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>Facebook</h3>
+                        <p class="follower-count">15,240 seguidores</p>
+                        <button class="social-btn">Seguir</button>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div class="social-card instagram">
+                    <div class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>Instagram</h3>
+                        <p class="follower-count">22,180 seguidores</p>
+                        <button class="social-btn">Seguir</button>
+                    </div>
+                </div>
+
+                <!-- Twitter -->
+                <div class="social-card twitter">
+                    <div class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>Twitter</h3>
+                        <p class="follower-count">8,950 seguidores</p>
+                        <button class="social-btn">Seguir</button>
+                    </div>
+                </div>
+
+                <!-- LinkedIn -->
+                <div class="social-card linkedin">
+                    <div class="social-icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>LinkedIn</h3>
+                        <p class="follower-count">5,670 conexiones</p>
+                        <button class="social-btn">Conectar</button>
+                    </div>
+                </div>
+
+                <!-- YouTube -->
+                <div class="social-card youtube">
+                    <div class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>YouTube</h3>
+                        <p class="follower-count">12,450 suscriptores</p>
+                        <button class="social-btn">Suscribirse</button>
+                    </div>
+                </div>
+
+                <!-- TikTok -->
+                <div class="social-card tiktok">
+                    <div class="social-icon">
+                        <i class="fab fa-tiktok"></i>
+                    </div>
+                    <div class="social-info">
+                        <h3>TikTok</h3>
+                        <p class="follower-count">18,720 seguidores</p>
+                        <button class="social-btn">Seguir</button>
+                    </div>
+                </div>
+            </div>
+{% endblock %}

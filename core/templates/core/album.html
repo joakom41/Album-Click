@@ -1,0 +1,828 @@
+{% extends 'core/base.html' %}
+{% block content  %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Arte - Álbum</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #475569;
+            background: #fefefe;
+        }
+
+        .album-hero {
+            background: linear-gradient(135deg, #f8f0f5 0%, #f0f4f8 50%, #f7f8fa 100%);
+            padding: 100px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .album-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(226, 210, 224, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(212, 227, 240, 0.3) 0%, transparent 50%);
+        }
+        
+        .hero-container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .album-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+            letter-spacing: -0.02em;
+        }
+        
+        .album-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+        
+        .gallery-section {
+            padding: 80px 20px;
+            background: #ffffff;
+        }
+        
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 14px 32px;
+            border: 1.5px solid #e1e5e9;
+            background: #fefefe;
+            color: #64748b;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.025em;
+        }
+        
+        .filter-btn:hover {
+            background: #f8f9fa;
+            color: #475569;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(71, 85, 105, 0.08);
+        }
+        
+        .filter-btn.active {
+            background: #475569;
+            color: white;
+            border-color: #475569;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(71, 85, 105, 0.15);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 4rem;
+        }
+        
+        .artwork-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(71, 85, 105, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .artwork-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(71, 85, 105, 0.12);
+            border-color: #e2e8f0;
+        }
+        
+        .artwork-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .artwork-card:hover .artwork-image {
+            transform: scale(1.03);
+        }
+        
+        .artwork-details {
+            padding: 2rem;
+            background: #fefefe;
+        }
+        
+        .artwork-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+        
+        .artwork-meta {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+        
+        .artwork-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .artwork-stats {
+            display: flex;
+            gap: 1.5rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .like-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .like-btn:hover {
+            color: #f8a4c4;
+            background: #fef7f0;
+            transform: scale(1.05);
+        }
+        
+        .like-btn.liked {
+            color: #f8a4c4;
+            background: #fef7f0;
+        }
+        
+        .artwork-price {
+            font-weight: 600;
+            color: #475569;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 25px 50px rgba(30, 41, 59, 0.15);
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: translateY(0) scale(1);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-close:hover {
+            background: rgba(30, 41, 59, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .modal-info {
+            padding: 3rem;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .modal-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 20px;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .meta-item {
+            text-align: center;
+        }
+        
+        .meta-label {
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .meta-value {
+            color: #475569;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .modal-description {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 14px 28px;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+        }
+        
+        .action-btn:hover {
+            background: #f8f9fa;
+            color: #475569;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(71, 85, 105, 0.08);
+        }
+        
+        @media (max-width: 768px) {
+            .album-title {
+                font-size: 2.75rem;
+            }
+            
+            .album-subtitle {
+                font-size: 1.1rem;
+                padding: 0 1rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .gallery-filters {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .filter-btn {
+                width: 200px;
+                text-align: center;
+            }
+            
+            .modal-content {
+                margin: 1rem;
+                border-radius: 24px;
+            }
+            
+            .modal-info {
+                padding: 2rem;
+            }
+            
+            .modal-title {
+                font-size: 1.75rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .album-hero {
+                padding: 60px 20px;
+            }
+            
+            .album-title {
+                font-size: 2.25rem;
+            }
+            
+            .gallery-section {
+                padding: 60px 20px;
+            }
+            
+            .artwork-details {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Album Hero Section -->
+    <section class="album-hero">
+        <div class="hero-container">
+            <h1 class="album-title">Colección de Arte</h1>
+            <p class="album-subtitle">Explora nuestra exclusiva selección de obras contemporáneas y clásicas</p>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="gallery-container">
+            <!-- Filter Buttons -->
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all">Todas las Obras</button>
+                <button class="filter-btn" data-filter="contemporary">Contemporáneo</button>
+                <button class="filter-btn" data-filter="abstract">Abstracto</button>
+                <button class="filter-btn" data-filter="landscape">Paisajes</button>
+                <button class="filter-btn" data-filter="portrait">Retratos</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Artwork 1 -->
+                <div class="artwork-card" data-category="abstract" data-artwork="1">
+                    <img src="https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Serenidad Abstracta" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Serenidad Abstracta</h3>
+                        <p class="artwork-meta">María González • 2024 • Óleo sobre lienzo</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>1,520</span>
+                                </div>
+                                <button class="like-btn" data-id="1">
+                                    <i class="fas fa-heart"></i>
+                                    <span>234</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$2,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artwork 2 -->
+                <div class="artwork-card" data-category="contemporary" data-artwork="2">
+                    <img src="https://images.pexels.com/photos/1266808/pexels-photo-1266808.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Geometría Urbana" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Geometría Urbana</h3>
+                        <p class="artwork-meta">Carlos Mendoza • 2024 • Acrílico sobre madera</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>980</span>
+                                </div>
+                                <button class="like-btn" data-id="2">
+                                    <i class="fas fa-heart"></i>
+                                    <span>156</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$1,800</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artwork 3 -->
+                <div class="artwork-card" data-category="landscape" data-artwork="3">
+                    <img src="https://images.pexels.com/photos/1269968/pexels-photo-1269968.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Amanecer en las Montañas" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Amanecer en las Montañas</h3>
+                        <p class="artwork-meta">Ana Rodríguez • 2023 • Óleo sobre lienzo</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>2,340</span>
+                                </div>
+                                <button class="like-btn" data-id="3">
+                                    <i class="fas fa-heart"></i>
+                                    <span>445</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$3,200</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artwork 4 -->
+                <div class="artwork-card" data-category="portrait" data-artwork="4">
+                    <img src="https://images.pexels.com/photos/1070945/pexels-photo-1070945.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Retrato Contemporáneo" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Retrato Contemporáneo</h3>
+                        <p class="artwork-meta">Diego Martín • 2024 • Técnica mixta</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>1,890</span>
+                                </div>
+                                <button class="like-btn" data-id="4">
+                                    <i class="fas fa-heart"></i>
+                                    <span>312</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$2,100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artwork 5 -->
+                <div class="artwork-card" data-category="abstract" data-artwork="5">
+                    <img src="https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Explosión de Color" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Explosión de Color</h3>
+                        <p class="artwork-meta">Sofía Herrera • 2024 • Acrílico sobre lienzo</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>1,650</span>
+                                </div>
+                                <button class="like-btn" data-id="5">
+                                    <i class="fas fa-heart"></i>
+                                    <span>278</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$2,800</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artwork 6 -->
+                <div class="artwork-card" data-category="contemporary" data-artwork="6">
+                    <img src="https://images.pexels.com/photos/1266808/pexels-photo-1266808.jpeg?auto=compress&cs=tinysrgb&w=800" 
+                         alt="Reflexiones Modernas" class="artwork-image">
+                    <div class="artwork-details">
+                        <h3 class="artwork-name">Reflexiones Modernas</h3>
+                        <p class="artwork-meta">Roberto Silva • 2023 • Escultura digital</p>
+                        <div class="artwork-actions">
+                            <div class="artwork-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-eye"></i>
+                                    <span>1,120</span>
+                                </div>
+                                <button class="like-btn" data-id="6">
+                                    <i class="fas fa-heart"></i>
+                                    <span>189</span>
+                                </button>
+                            </div>
+                            <span class="artwork-price">$4,500</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for artwork details -->
+    <div id="artworkModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modalImage" src="" alt="" class="modal-image">
+            <div class="modal-info">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <div class="modal-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Artista</div>
+                        <div id="modalArtist" class="meta-value"></div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Año</div>
+                        <div id="modalYear" class="meta-value"></div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Técnica</div>
+                        <div id="modalMedium" class="meta-value"></div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Dimensiones</div>
+                        <div id="modalDimensions" class="meta-value"></div>
+                    </div>
+                </div>
+                <p id="modalDescription" class="modal-description"></p>
+                <div class="modal-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-heart"></i>
+                        Me Gusta
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-share-alt"></i>
+                        Compartir
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-download"></i>
+                        Descargar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Artwork data
+        const artworksData = {
+            1: {
+                title: "Serenidad Abstracta",
+                artist: "María González",
+                year: "2024",
+                medium: "Óleo sobre lienzo",
+                dimensions: "120 x 90 cm",
+                price: "$2,500",
+                image: "https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Una exploración de formas orgánicas y colores suaves que evocan tranquilidad y contemplación. Esta obra representa la búsqueda de paz interior en un mundo caótico."
+            },
+            2: {
+                title: "Geometría Urbana",
+                artist: "Carlos Mendoza",
+                year: "2024",
+                medium: "Acrílico sobre madera",
+                dimensions: "100 x 80 cm",
+                price: "$1,800",
+                image: "https://images.pexels.com/photos/1266808/pexels-photo-1266808.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Una interpretación moderna de la arquitectura urbana, donde las líneas geométricas se encuentran con la expresión artística contemporánea."
+            },
+            3: {
+                title: "Amanecer en las Montañas",
+                artist: "Ana Rodríguez",
+                year: "2023",
+                medium: "Óleo sobre lienzo",
+                dimensions: "150 x 100 cm",
+                price: "$3,200",
+                image: "https://images.pexels.com/photos/1269968/pexels-photo-1269968.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Captura la majestuosidad del amanecer en paisajes montañosos, utilizando técnicas tradicionales para crear una atmósfera sublime."
+            },
+            4: {
+                title: "Retrato Contemporáneo",
+                artist: "Diego Martín",
+                year: "2024",
+                medium: "Técnica mixta",
+                dimensions: "80 x 60 cm",
+                price: "$2,100",
+                image: "https://images.pexels.com/photos/1070945/pexels-photo-1070945.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Un retrato que fusiona técnicas clásicas con elementos contemporáneos, explorando la identidad en la era digital."
+            },
+            5: {
+                title: "Explosión de Color",
+                artist: "Sofía Herrera",
+                year: "2024",
+                medium: "Acrílico sobre lienzo",
+                dimensions: "110 x 85 cm",
+                price: "$2,800",
+                image: "https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Una celebración vibrante del color y la forma, donde cada pincelada transmite energía y vitalidad pura."
+            },
+            6: {
+                title: "Reflexiones Modernas",
+                artist: "Roberto Silva",
+                year: "2023",
+                medium: "Escultura digital",
+                dimensions: "Variable",
+                price: "$4,500",
+                image: "https://images.pexels.com/photos/1266808/pexels-photo-1266808.jpeg?auto=compress&cs=tinysrgb&w=800",
+                description: "Una obra que desafía los límites entre lo físico y lo digital, creando nuevas formas de expresión artística."
+            }
+        };
+
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const artworkCards = document.querySelectorAll('.artwork-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                const filter = btn.getAttribute('data-filter');
+                
+                artworkCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 100);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Like functionality
+        const likeBtns = document.querySelectorAll('.like-btn');
+        likeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                btn.classList.toggle('liked');
+                
+                const heartIcon = btn.querySelector('i');
+                if (btn.classList.contains('liked')) {
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas');
+                } else {
+                    heartIcon.classList.remove('fas');
+                    heartIcon.classList.add('far');
+                }
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('artworkModal');
+        const closeModal = document.getElementById('closeModal');
+
+        function showModal() {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        artworkCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const artworkId = card.getAttribute('data-artwork');
+                const artwork = artworksData[artworkId];
+                
+                if (artwork) {
+                    document.getElementById('modalImage').src = artwork.image;
+                    document.getElementById('modalTitle').textContent = artwork.title;
+                    document.getElementById('modalArtist').textContent = artwork.artist;
+                    document.getElementById('modalYear').textContent = artwork.year;
+                    document.getElementById('modalMedium').textContent = artwork.medium;
+                    document.getElementById('modalDimensions').textContent = artwork.dimensions;
+                    document.getElementById('modalDescription').textContent = artwork.description;
+                    
+                    showModal();
+                }
+            });
+        });
+
+        closeModal.addEventListener('click', hideModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                hideModal();
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
